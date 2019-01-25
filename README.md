@@ -8,7 +8,7 @@ The present document will analyze in a first part, the structure of the environm
 
 ### The environment class
 
-You can download the python file at this link:
+You can download the python file relative to this section at this link:
 [environment.py](environment.py)
 
 The environment class is as follows:
@@ -102,8 +102,8 @@ class Environment:
                 pass
 
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+The environment class is instiated with a height and length, that defines its size, and a background color bckGrndColor.
+It mains attribute are a grid, 'self.value' (of type list\*list\*set) that contains EnvObject (this class will be later described) at various positions, and a list of 
 
 
 
