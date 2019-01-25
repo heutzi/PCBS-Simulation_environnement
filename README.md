@@ -6,10 +6,12 @@ Python project meant to provide a simulation of a natural environment. This proj
 As writen, in the presentation note, This project was aiming at providing a framework for an environment simulation. We provided a good example of use, through the design of two categories of environmental objects, agents and plant, interacting together.
 The present document will analyze in a first part, the structure of the environment class, and the second and third will describe respectively plants and agents sub-classes.
 
-### The environment class
+## The environment framework
 
 You can download the python file relative to this section at this link:
 [environment.py](environment.py)
+
+### The environment class
 
 The `Environment` class is as follows:
 
@@ -115,6 +117,8 @@ Another import method is `getColorMatrix` that returns a color (RVB format) grid
 
 Finally, `Environment` are capable of returning various computations involving some of its feature, such as `populationMax` that returns the absolute `populationMax` given a name (corresponding to EnvAgentGlobal instance), or `getAnyOpaq`, that returns any object at position (x,y) having attribute `isOpaq == True`.
 
+### The EnvObject class
+
 As described previously, the Environment class works in combination with two other classes, that works in pair.
 The first one is the `EnvObject` class:
 
@@ -152,14 +156,66 @@ class EnvObject(ABC):
 
     @abstractmethod
     def iterate(self, environment):
-        pass
-    
-    def tick(self, environment, tick):
-        if tick%self.globRef.speed == 0:
-            self.iterate(environment)
+reproduce(self, environment)
 ```
 
+The Environment class is the one to which belongs the objects that populates the environment. Each instance has a position, recorded by the attributes x and y, that match the actual position of the object in the `Environment` object that was instanciated.
+It also has a color, for representation and a name, commmon to all objects belonging to the same 'category', or `EnvObjectGlobal` instance.
+The `EnvObject` is an abstract class, meaning it can't be directly instantiated. One must design its own subclass. Particularly two methods needs to be implemented: the `iterate` method that gives the object a behavior and must integrate the `reproduce` method (integrating the `reproduce`method is more a strong recommendation than a requirement, as `iterate` can be rewritten without any constraint), and the `reproduce`method (that may actually not be used depending on how iterate was implemented).
 
+
+### The EnvObjectGlobal class
+The `EnvObject` works in pair with a `EnvEnvironmentGlobal` object:
+
+```markdown
+class EnvObjectGlobal(ABC):
+    def __init__(self, name, EnvObject):
+        super().__init__()
+        self.name = name #id for identification
+        self.size = 1
+        self.dens_max = 100    #maximal density
+        self.dens_min = 0    #minimal density
+        self.isPassable = True
+        self.isOpaq = True
+
+        #default environment object for initialisation
+        self.default = EnvObject
+        self.default.globRef = self
+
+    def isAssignable(self, environment, x, y):
+        """return True if an object fits at position (x,y)"""
+        res = True
+        H = environment.height
+        W = environment.width
+        for i in range(x, x+self.size):
+            for j in range(y, y+self.size):
+                # An object can be assigned at position p = (x,y) in 2 cases:
+                #1) the object is passable and there is no impassable object at p,
+                #2) there is no object at p.
+                assignXY = (environment.isPassableXY(i%H, j%W) and self.isPassable) or not environment.value[i%H][j%W]
+                res = res and assignXY
+            if not res:
+                break
+        return res
+
+    def instantiate(self):
+        return copy.copy(self.default)
+
+    def initEnv(self, environment, initDens):
+        H = environment.height
+        W = environment.width
+        environment.objGlob[self.name] = self
+        maxObj = (initDens*H*W)//1
+        environment.objCounter[self.name] = 0
+        oCount = 0
+        while oCount < maxObj:
+            x = random.randint(0, H-1)
+            y = random.randint(0, W-1)
+            o = environment.create(self.name, x, y)
+            if o:
+oCount += 1
+```
+The `EnvObjectGlobal` records properties common to a 'species'.
 
 ### Support or Contact
 
