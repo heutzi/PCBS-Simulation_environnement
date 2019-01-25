@@ -549,6 +549,6 @@ Follow the link below for the details:
 The `Environment` class was designed as a flexible tool that allows multiple usage.
 In this project we developped two examples of use, in order to simulate plants and agents in a natural environment.
 The simulation was giving encouraging results but displayed a very high sensitivity to various parameters. Even though it was expected, this made testing tedious.
-Moreover, our program lacked tools that could assess any result it could provide.
+Moreover, our program lacked tools that could assess any result it could come up.
 
 Previous programming classes related to the course: *Introduction to natural language processing in Python*, *Introduction to object oriented design and programming*.
