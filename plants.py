@@ -57,5 +57,5 @@ class Plant(EnvObject):
                 p = environment.create(self.name, x, y)
 
     def iterate(self, environment):
-        #self.burn(environment)
+        self.burn(environment)
         self.reproduce(environment)
