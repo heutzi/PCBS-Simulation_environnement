@@ -215,7 +215,8 @@ class EnvObjectGlobal(ABC):
             if o:
 oCount += 1
 ```
-The `EnvObjectGlobal` records properties common to a 'species'.
+The `EnvObjectGlobal` records properties common to a 'species'. Notably, the name, size, maximal and minimal density of individuals, and if passable or opaque.
+Every `EnvObject`, as said previously, is done through the environment that calls the `instantiate` method of the corresponding `
 
 ### Support or Contact
 
