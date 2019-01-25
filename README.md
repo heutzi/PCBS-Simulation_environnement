@@ -8,7 +8,7 @@ The present document will analyze in a first part, the structure of the environm
 
 ## The environment framework
 
-You can download the python file relative to this section at this link:
+The corresponding python file is available at this link:
 [environment.py](environment.py).
 
 ### The environment class
@@ -164,7 +164,7 @@ class EnvObject(ABC):
 
 The Environment class is the one to which belongs the objects that populates the environment. Each instance has a position, recorded by the attributes x and y, that match the actual position of the object in the `Environment` object that was instanciated.
 It also has a color, for representation and a name, commmon to all objects belonging to the same 'category', or `EnvObjectGlobal` instance.
-Each `EnvObject` is linked to its global reference through the attribute globRef.
+Each `EnvObject` is linked to its global reference through the attribute globRef. No object of this kind, except the default object for `EnvObjectGlobal`, should be instantiated in an other way than through the `Environment`create function.
 The `EnvObject` is an abstract class, meaning it can't be directly instantiated. One must design its own subclass. Particularly two methods needs to be implemented: the `iterate` method that gives the object a behavior (it is strongly recommended for it to integrate the `reproduce` method), and the `reproduce`method (that may actually not be used depending on how iterate was implemented).
 Finally, the `tick` method expresses at which pace an object iterates.
 
@@ -291,7 +291,7 @@ class Plant(EnvObject):
         self.reproduce(environment)
 ```
 
-The plant implementation of `ENvObjectGlobal`, `PlantGlobal` has one original attribute, `reprodRate` that will play a role in the speed at which plant reproduce. Otherwise, plant may vary in size and color.
+The plant implementation of `EnvObjectGlobal`, `PlantGlobal` has one original attribute, `reprodRate` that will play a role in the speed at which plant reproduce. Otherwise, plant may vary in size and color.
 This follows an old implementation of "speed" where it was linked to a probability of reproducing, rather than to a speed constant. It has the advantage of plants not duplicating all at the same time.
 The plant implementation of `EnvObject`, `Plant`, in addition to randomly duplicate as a way of reproducing, may catch fire. the probability of catching fire is a constant to all plants : `BURN_RATE`. Fire propagates from plant to plant in every direction. Fire turns plant to ashes by changing their color to red first, then from black to white in four stages.
 
@@ -481,7 +481,9 @@ This implementation of agents permits an evolution of their behavior over time, 
 
 ### Graphic functions
 The corresponding python file is available at this link:
-[display_functions.py](display_functions.py)
+[display_functions.py](display_functions.py).
+
+The graphic functions were developped in order to represent graphicly the matrix contained in an `Environment` object.
 ```markdown
 def DrawMatrix(mat, surface, px):
     """print the matrix elements to screen given a pixel size"""
@@ -492,7 +494,61 @@ def DrawMatrix(mat, surface, px):
             #surface.set_at((x, y), mat[y][x])
             pygame.draw.rect(surface, mat[y][x], (x*px, y*px, px, px))
 
-def CommitChanges(chg_list, surface):
-    for chg in chg_list:
-        pygame.draw.rect(surface, chg[1], (chg[0]*px, chg[1]*px, px, px))
 ```
+
+To summarize the functionning `DrawMatrix`, it draws a square of the corresponding color, for each position (x,y) in the matrix `mat`. The scale of the square is determined by `px`.
+
+### Environment running function
+The corresponding python file is available at this link:
+[display_functions.py](display_functions.py).
+
+The following function aims at instantiating an `Environment` object, populate it with various agents and plants and running the simulation.
+```markdown
+def MyMain(H, W):
+    random.seed(time.time())
+
+    environment = Environment(H, W, C.COL_DEFAULT)
+    for AgName in list(C.AGENT_CARACT.keys()):
+        AgCar = C.AGENT_CARACT[AgName]
+        A = AgentGlobal(AgName, Agent(0,0,AgName,*AgCar[0]), *AgCar[1:])
+        A.initEnv(environment, C.AGENT_INIT[AgName])
+
+    for PlName in list(C.PLANT_CARACT.keys()):
+        PlCar = C.PLANT_CARACT[PlName]
+        P = PlantGlobal(PlName, Plant(0,0,PlName,PlCar[0]), *PlCar[1:])
+        P.initEnv(environment, C.PLANT_INIT[PlName])
+
+    pygame.init()
+    screen = pygame.display.set_mode((C.PX_SIZE*W, C.PX_SIZE*H), pygame.DOUBLEBUF)
+    screen.fill((0, 0, 0))
+
+    disp.DrawMatrix(environment.getColorMatrix(), screen, C.PX_SIZE)
+
+    # wait till the window is closed
+    clock = pygame.time.Clock()
+    done = False
+    ticker = 0 #used to express time passing in the environment
+    while not done:
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                        done = True
+        environment.tick(ticker)
+        ticker += 1
+        disp.DrawMatrix(environment.getColorMatrix(), screen, C.PX_SIZE)
+        # display the backbuffer
+        pygame.display.flip()
+        clock.tick(C.TICK)
+```
+Note that the populating of the environment is separated from its ititialisation, which allows for all sorts of combination with various types of objects.
+Here we used some data recorded in a file C to populate the environment and set the "pixel size" of the graphic window.
+Follow the link below for the details:
+[constants.py](constants.py)
+
+## Conclusion
+
+The `Environment` class was designed as a flexible tool that allows multiple usage.
+In this project we developped two examples of use, in order to simulate plants and agents in a natural environment.
+The simulation was giving encouraging results but displayed a very high sensitivity to various parameters. Even though it was expected, this made testing tedious.
+Moreover, our program lacked tools that could assess any result it could provide.
+
+Previous programming classes related to the course: *Introduction to natural language processing in Python*, *Introduction to object oriented design and programming*.
