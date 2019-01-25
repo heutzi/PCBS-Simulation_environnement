@@ -552,3 +552,4 @@ The simulation was giving encouraging results but displayed a very high sensitiv
 Moreover, our program lacked tools that could assess any result it could come up.
 
 Previous programming classes related to the course: *Introduction to natural language processing in Python*, *Introduction to object oriented design and programming*.
+Learnings: I improved a lot at my comprehension of the object aspect of python, and underlying object referencement. While working at cleaning my programming, I also learned better ways to design and use functions. 
