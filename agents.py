@@ -2,12 +2,13 @@ import random
 import copy
 from environment import EnvObject, EnvObjectGlobal
 
-VISION_LENGTH = 6
-NBR_ELEM_VIS = 6
+VISION_LENGTH = 8
+NBR_ELEM_VIS = 4
 
 class AgentGlobal(EnvObjectGlobal):
-    def __init__(self, name, agent, dens_min, dens_max, diet):
+    def __init__(self, name, agent, dens_min, dens_max, speed, diet):
         super().__init__(name, agent)
+        self.speed = speed
         self.dens_max = dens_max
         self.dens_min = dens_min
         self.diet = diet

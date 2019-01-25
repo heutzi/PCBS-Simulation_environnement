@@ -9,6 +9,7 @@ class EnvObjectGlobal(ABC):
         self.size = 1
         self.dens_max = 100    #maximal density
         self.dens_min = 0    #minimal density
+        self.speed = 1 #speed at which an object behave
         self.isPassable = True
         self.isOpaq = True
 
@@ -33,7 +34,7 @@ class EnvObjectGlobal(ABC):
         return res
 
     def instantiate(self):
-        return copy.copy(self.default)
+        return copy.deepcopy(self.default)
 
     def initEnv(self, environment, initDens):
         H = environment.height
@@ -83,7 +84,11 @@ class EnvObject(ABC):
 
     @abstractmethod
     def iterate(self, environment):
-        reproduce(self, environment)
+        pass
+    
+    def tick(self, environment, tick):
+        if tick%self.globRef.speed == 0:
+            self.iterate(environment)
 
 class Environment:
     """Matrix that holds the color values for the screen - includes functions to integrate the environment objects."""
@@ -163,11 +168,11 @@ class Environment:
             colMat.append(l)
         return colMat
 
-    def iterate(self):
+    def tick(self, tick):
         O = list(self.objUpdate)
         random.shuffle(O)
         for o in O:
             try:
-                o.iterate(self)
+                o.tick(self, tick)
             except KeyError:
                 pass

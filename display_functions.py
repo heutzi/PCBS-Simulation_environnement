@@ -8,7 +8,3 @@ def DrawMatrix(mat, surface, px):
         for x in range(H):
             #surface.set_at((x, y), mat[y][x])
             pygame.draw.rect(surface, mat[y][x], (x*px, y*px, px, px))
-
-def CommitChanges(chg_list, surface):
-    for chg in chg_list:
-        pygame.draw.rect(surface, chg[1], (chg[0]*px, chg[1]*px, px, px))

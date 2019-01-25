@@ -32,11 +32,13 @@ def MyMain(H, W):
     # wait till the window is closed
     clock = pygame.time.Clock()
     done = False
+    ticker = 0 #used to express time passing in the environment
     while not done:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                         done = True
-        environment.iterate()
+        environment.tick(ticker)
+        ticker += 1
         disp.DrawMatrix(environment.getColorMatrix(), screen, C.PX_SIZE)
         # display the backbuffer
         pygame.display.flip()
