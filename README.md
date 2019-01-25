@@ -4,7 +4,7 @@ Python project meant to provide a simulation of a natural environment. This proj
 ## Introduction
 
 As writen, in the presentation note, This project was aiming at providing a framework for an environment simulation. We provided a good example of use, through the design of two categories of environmental objects, agents and plant, interacting together.
-The present document will analyze in a first part, the structure of the environment class, and the second and third will describe respectively plants and agents sub-classes.
+The present document will first analyze, the structure of the environment class. In a second and third part will respectively be described plants and agents sub-classes. Finally, we will go through the graphic and running functions.
 
 ## The environment framework
 
