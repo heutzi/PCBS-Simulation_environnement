@@ -11,7 +11,7 @@ The present document will analyze in a first part, the structure of the environm
 You can download the python file relative to this section at this link:
 [environment.py](environment.py)
 
-The environment class is as follows:
+The `Environment` class is as follows:
 
 ```markdown
 class Environment:
@@ -102,8 +102,62 @@ class Environment:
                 pass
 
 ```
-The environment class is instiated with a height and length, that defines its size, and a background color bckGrndColor.
-It mains attribute are a grid, 'self.value' (of type list\*list\*set) that contains EnvObject (this class will be later described) at various positions, and a list of 
+The `Environment` class is instiated with a height and width, that defines its size, and a background color bckGrndColor.
+It mains attribute are a grid, `self.value`, (of type list\*list\*set) that contains `EnvObject` at various positions, and a set listing those recoded objects, `self.objUpdate`.The `EnvObject` class will be later described.
+`Environment` also holds the count of the number of object it contains per instances of `EnvObjectGlobal`, class that will be described later as well.
+
+The main purpose of the environment is to be iterated, in order for it to simulate an evolution of a system.
+This is the role of the method `tick` that, given a time counter, will iterate the objects contained within the environment object. The purpose of the attribute `self.objUpdate` was to accelerate this procedure by avoiding going through the height\*width cells of `self.value`, that might be empty.
+
+Another import method is `getColorMatrix` that returns a color (RVB format) grid of size height\*width, representing for each pocition either the background color when no object, or the color of one of the object if any. This method allows later for graphic representation.
+
+`Environment` object are also respondible for `EnvObject` creation within itself, through the method `create`. This is mainly to avoid conflict with objects that may not allow for superposition, having attribute `isPassable == False`.
+
+Finally, `Environment` are capable of returning various computations involving some of its feature, such as `populationMax` that returns the absolute `populationMax` given a name (corresponding to EnvAgentGlobal instance), or `getAnyOpaq`, that returns any object at position (x,y) having attribute `isOpaq == True`.
+
+As described previously, the Environment class works in combination with two other classes, that works in pair.
+The first one is the `EnvObject` class:
+
+```markdown
+class EnvObject(ABC):
+    def __init__(self, pos_x, pos_y, name, color):
+        super().__init__()
+        self.name = name #id for identification
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.color = color
+        
+        self.globRef = None #EnvObjectGlobal, grouping attributes for all objects sharing a same name
+
+    def __repr__(self):
+        return "Ag"+str(self.pos_x)+"-"+str(self.pos_y)
+
+    def __str__(self):
+        return "Ag"+str(self.pos_x)+"-"+str(self.pos_y)
+
+    def getSize(self):
+        return self.globRef.size
+
+    def destruct(self, environment):
+        if environment.objCounter[self.name] > environment.populationMin(self.name):
+            for i in range(self.pos_x, self.pos_x+self.getSize()):
+                for j in range(self.pos_y, self.pos_y+self.getSize()):
+                    environment.value[i%environment.height][j%environment.width].remove(self)
+            environment.objCounter[self.name] -= 1
+            environment.objUpdate.remove(self)
+
+    @abstractmethod
+    def reproduce(self, environment):
+        pass
+
+    @abstractmethod
+    def iterate(self, environment):
+        pass
+    
+    def tick(self, environment, tick):
+        if tick%self.globRef.speed == 0:
+            self.iterate(environment)
+```
 
 
 
