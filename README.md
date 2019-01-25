@@ -112,9 +112,9 @@ This is the role of the method `tick` that, given a time counter, will iterate t
 
 Another import method is `getColorMatrix` that returns a color (RVB format) grid of size height\*width, representing for each pocition either the background color when no object, or the color of one of the object if any. This method allows later for graphic representation.
 
-`Environment` object are also respondible for `EnvObject` creation within itself, through the method `create`. This is mainly to avoid conflict with objects that may not allow for superposition, having attribute `isPassable == False`.
+`Environment` object are also respondible for `EnvObject` creation within itself, through the method `create`. This is mainly to avoid conflict with objects that may not allow superposition, having attribute `isPassable == False`.
 
-Finally, `Environment` are capable of returning various computations involving some of its feature, such as `populationMax` that returns the absolute `populationMax` given a name (corresponding to EnvAgentGlobal instance), or `getAnyOpaq`, that returns any object at position (x,y) having attribute `isOpaq == True`.
+Finally, `Environment` objects are capable of returning various computations involving some of its feature, such as `populationMax` that returns the absolute `populationMax` given a 'name' (corresponding to an EnvAgentGlobal instance), or `getAnyOpaq`, that returns any object at position (x,y) having attribute `isOpaq == True`.
 
 ### The EnvObject class
 
@@ -162,7 +162,7 @@ class EnvObject(ABC):
             self.iterate(environment)
 ```
 
-The Environment class is the one to which belongs the objects that populates the environment. Each instance has a position, recorded by the attributes x and y, that match the actual position of the object in the `Environment` object that was instanciated.
+The Environment class is the one to which belongs the objects that populates the environment. Each instance has a position, recorded by the attributes x and y, that matches the actual position of the object in the `Environment` object that was instanciated.
 It also has a color, for representation and a name, commmon to all objects belonging to the same 'category', or `EnvObjectGlobal` instance.
 Each `EnvObject` is linked to its global reference through the attribute globRef. No object of this kind, except the default object for `EnvObjectGlobal`, should be instantiated in an other way than through the `Environment`create function.
 The `EnvObject` is an abstract class, meaning it can't be directly instantiated. One must design its own subclass. Particularly two methods needs to be implemented: the `iterate` method that gives the object a behavior (it is strongly recommended for it to integrate the `reproduce` method), and the `reproduce`method (that may actually not be used depending on how iterate was implemented).
@@ -222,9 +222,9 @@ class EnvObjectGlobal(ABC):
                 oCount += 1
 ```
 The `EnvObjectGlobal` records properties common to a 'species'. Notably, the name, size, maximal and minimal density of individuals, and if passable or opaque.
-Every `EnvObject`, as said previously, is done through the environment that calls the `instantiate` method of the corresponding `EnvObjectGlobal`.
+Every `EnvObject`, as said previously, is created through the environment that calls the `instantiate` method of the corresponding `EnvObjectGlobal`.
 Finally, `EnvObjectGlobal` are equiped to randomly populate an environment with the function `initEnv` that takes for argument an initial density `initDens`.
-Note that EnvObjectGlobal is also an abstract object. It is recommended to implement your own sub-class in parallel to the implementation of the `EnvObject`. An example follows.
+Note that EnvObjectGlobal is also an abstract object. It is recommended to implement your own sub-class in parallel to the implementation of the `EnvObject`. Examples follow.
 
 ## Example: Plant objects
 
@@ -292,7 +292,7 @@ class Plant(EnvObject):
 ```
 
 The plant implementation of `EnvObjectGlobal`, `PlantGlobal` has one original attribute, `reprodRate` that will play a role in the speed at which plant reproduce. Otherwise, plant may vary in size and color.
-This follows an old implementation of "speed" where it was linked to a probability of reproducing, rather than to a speed constant. It has the advantage of plants not duplicating all at the same time.
+`reprodRate` follows an old implementation of "speed" where it was linked to a probability of reproducing, rather than to a speed constant. It has the advantage of plants not duplicating all at the same time.
 The plant implementation of `EnvObject`, `Plant`, in addition to randomly duplicate as a way of reproducing, may catch fire. the probability of catching fire is a constant to all plants : `BURN_RATE`. Fire propagates from plant to plant in every direction. Fire turns plant to ashes by changing their color to red first, then from black to white in four stages.
 
 ## Example: Agent objects
@@ -473,7 +473,7 @@ class Agent(EnvObject):
 The agent implementation of `EnvObjectGlobal`, `AgentGlobal` has one additional attribute, diet, which lists by their name all the other categories (instances of `EnvObjectGlobal`) that a type of agent can eat.
 The agent implementation of `EnvObject`, `Agent`, have three additional attribute `rprd` which is used to express the pace at chich an agent reproduces, `starv`, the speed at which an agent starve if not eating and `behav` which is a dictionnary referencing the behavior to adopt when perceiving various types of objects.
 
-`Agent` while iterating, performs four actions. It reproduces, the way a human cell would do, by duplicating itself at its current position and transmitting its behavioural gene (`behav`). It moves, implying a complex step of looking around, referencing what types of objects are in the near perimeter (the `look_at` method simulate vision, as object seen block further vision), and evaluating which direction to go is the best (contact me by email at jonas.noblet@gmail.com for further details). Then the Agent gets exhausted and, if not dead, eat.
+`Agent` while iterating, performs four actions. It reproduces, the way a human cell would do, by duplicating itself at its current position and transmitting its behavioural gene (`behav`). It moves, implying a complex step of looking around, referencing what types of objects are in the near perimeter (the `look_at` method simulates vision, as object that are seen will block further vision), and evaluating which direction to go is the best (contact me by email at jonas.noblet@gmail.com for further details). Then the Agent gets exhausted and, if not dead, eats.
 
 This implementation of agents permits an evolution of their behavior over time, as selection will operate through starvation and predation. However, the simulation is hard to calibrate in order for the population to not end up annihilated by exhaustion in early stages of their evolution. 
 
