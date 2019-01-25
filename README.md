@@ -9,7 +9,7 @@ The present document will analyze in a first part, the structure of the environm
 ## The environment framework
 
 You can download the python file relative to this section at this link:
-[environment.py](environment.py)
+[environment.py](environment.py).
 
 ### The environment class
 
@@ -229,7 +229,8 @@ Note that EnvObjectGlobal is also an abstract object. It is recommended to imple
 ## Example: Plant objects
 
 The corresponding python file is available at this link:
-[plants.py](plants.py)
+[plants.py](plants.py).
+
 The plant objects are meant to simulate plants, that randomly grow in the environment and may catch fire.
 Follows the implementation of the respective `EnvObjectGlobal` and `EnvObject class`.
 ```markdown
@@ -297,7 +298,8 @@ The plant implementation of `EnvObject`, `Plant`, in addition to randomly duplic
 ## Example: Agent objects
 
 The corresponding python file is available at this link:
-[agents.py](agents.py)
+[agents.py](agents.py).
+
 The agent objects are meant to simulate agents, that move, eat and reproduce in the environment.
 Follows the implementation of the respective `EnvObjectGlobal` and `EnvObject class`.
 ```markdown
