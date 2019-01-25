@@ -8,6 +8,8 @@ The present document will analyze in a first part, the structure of the environm
 
 ### The environment class
 
+You can download the python file at this link:
+[environment.py](environment.py)
 The environment class is as follows:
 
 ```markdown
